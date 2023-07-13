@@ -10,7 +10,7 @@ class Api::V1::RoomsController < ApplicationController
   def show
     @room = Room.find(params[:id])
     
-    render json: @room
+    render json: @room.to_json(include: :messages)
   end
 
   # POST /rooms
