@@ -1,37 +1,51 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getRoomMessages, sendMessage } from "../helpers/API";
 
-function Room({ room, sendMessage }) {
+function Room() {
+    const [mounted, setMounted] = useState(false);
+    const { id } = useParams();
+    const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState("");
 
     useEffect(() => {
-        setMessageInput("");
-    }, [room]);
+        if (!mounted) {
+            getRoomMessages(id).then((messagesData) => {
+                setMessages(messagesData);
+                setMounted(true);
+            });
+        }
+    }, []);
 
     function handleSend(e) {
         e.preventDefault();
-        sendMessage(room.id, messageInput);
+        sendMessage(id, messageInput);
+        getRoomMessages(id).then((messagesData) => {
+            setMessages(messagesData);
+        });
         setMessageInput("");
     }
 
-    return (
-        <div className="Room">
-            <h2>{room.name}</h2>
-            <ul>
-                {room.messages.map((message, idx) => (
-                    <li key={idx}>{message}</li>
-                ))}
-            </ul>
-            <form onSubmit={handleSend}>
-                <input
-                    type="text"
-                    id="message"
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                />
-                <button type="submit">Send</button>
-            </form>
-        </div>
-    );
+    if (mounted) {
+        return (
+            <div className="Room">
+                <ul>
+                    {messages.map((message) => (
+                        <li key={message.id}>{message.text}</li>
+                    ))}
+                </ul>
+                <form onSubmit={handleSend}>
+                    <input
+                        type="text"
+                        id="message"
+                        value={messageInput}
+                        onChange={(e) => setMessageInput(e.target.value)}
+                    />
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        );
+    }
 }
 
 export default Room;
