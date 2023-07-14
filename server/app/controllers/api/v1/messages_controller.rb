@@ -24,6 +24,8 @@ class Api::V1::MessagesController < ApplicationController
     else
       render json: @message.errors, status: :unprocessable_entity
     end
+
+    RoomChannel.broadcast_to(@room, @message)
   end
 
   private

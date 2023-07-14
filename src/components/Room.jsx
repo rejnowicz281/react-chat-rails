@@ -3,30 +3,61 @@ import { useParams } from "react-router-dom";
 import { getRoomMessages, sendMessage } from "../helpers/API";
 
 function Room() {
-    const [mounted, setMounted] = useState(false);
+    const [initialMessagesLoaded, setInitialMessagesLoaded] = useState(false);
+    const [socketConnected, setSocketConnected] = useState(false);
     const { id } = useParams();
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState("");
 
+    // Websocket configuration
     useEffect(() => {
-        if (!mounted) {
-            getRoomMessages(id).then((messagesData) => {
-                setMessages(messagesData);
-                setMounted(true);
-            });
-        }
-    }, []);
+        const ws = new WebSocket("ws://localhost:3000/cable");
+
+        ws.onopen = () => {
+            setSocketConnected(true);
+            console.log("Connected to WebSocket in room " + id);
+
+            ws.send(
+                JSON.stringify({
+                    command: "subscribe",
+                    identifier: JSON.stringify({
+                        channel: "RoomChannel",
+                        room_id: id,
+                    }),
+                })
+            );
+        };
+
+        ws.onmessage = (e) => {
+            const response = JSON.parse(e.data);
+            if (response.type === "ping") return;
+            if (response.type === "confirm_subscription") return;
+            if (response.type === "welcome") return;
+
+            const messageData = response.message;
+            setMessages((messages) => [...messages, messageData]);
+        };
+
+        return () => {
+            ws.close();
+        };
+    }, [id]);
+
+    // Get messages from API on first load
+    useEffect(() => {
+        getRoomMessages(id).then((messagesData) => {
+            setMessages(messagesData);
+            setInitialMessagesLoaded(true);
+        });
+    }, [id]);
 
     function handleSend(e) {
         e.preventDefault();
         sendMessage(id, messageInput);
-        getRoomMessages(id).then((messagesData) => {
-            setMessages(messagesData);
-        });
         setMessageInput("");
     }
 
-    if (mounted) {
+    if (initialMessagesLoaded && socketConnected) {
         return (
             <div className="Room">
                 <ul>
