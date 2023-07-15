@@ -13,14 +13,22 @@ function App() {
     const logOutUser = useUserStore((state) => state.logout);
     const [rooms, setRooms] = useState([]);
     const [roomsLoaded, setRoomsLoaded] = useState(false);
+    const [checkingLoginStatus, setCheckingLoginStatus] = useState(true);
 
     useEffect(() => {
-        checkLoginStatus().then((loginStatus) => {
-            console.log(loginStatus);
-            if (loginStatus.logged_in && !currentUser) loadRooms().then(() => setUser(loginStatus.user));
-            else if (!loginStatus.logged_in && currentUser) setUser(null);
-        });
+        handleLoginStatus();
     }, []);
+
+    async function handleLoginStatus() {
+        const loginStatus = await checkLoginStatus();
+        if (loginStatus.logged_in && !currentUser) {
+            await loadRooms();
+            setUser(loginStatus.user);
+        } else if (!loginStatus.logged_in && currentUser) {
+            setUser(null);
+        }
+        setCheckingLoginStatus(false);
+    }
 
     async function handleLogOut() {
         const data = await signOut();
@@ -38,40 +46,42 @@ function App() {
         console.log("rooms loaded!");
     }
 
-    return (
-        <HashRouter>
-            <Routes>
-                {currentUser && roomsLoaded ? (
-                    <Route
-                        element={
-                            <>
-                                <nav>
-                                    <h1>Welcome, {currentUser.name}</h1>
-                                    <button onClick={handleLogOut}>Log out</button>
-                                    {rooms.map((room) => (
-                                        <NavLink key={room.id} to={`/react-chat/rooms/${room.id}`}>
-                                            {room.name}
-                                        </NavLink>
-                                    ))}
-                                </nav>
-                                <Outlet />
-                            </>
-                        }
-                    >
-                        <Route path="/*" element={<Navigate to="/react-chat/home" />} />
-                        <Route path="/react-chat/home" element={<Home />} />
-                        <Route path="/react-chat/rooms/:id" element={<Room />} />
-                    </Route>
-                ) : (
-                    <>
-                        <Route path="/*" element={<Navigate to="/react-chat/sign-up" />} />
-                        <Route path="/react-chat/sign-up" element={<SignUpForm loadRooms={loadRooms} />} />
-                        <Route path="/react-chat/sign-in" element={<SignInForm loadRooms={loadRooms} />} />
-                    </>
-                )}
-            </Routes>
-        </HashRouter>
-    );
+    if (!checkingLoginStatus) {
+        return (
+            <HashRouter>
+                <Routes>
+                    {currentUser && roomsLoaded ? (
+                        <Route
+                            element={
+                                <>
+                                    <nav>
+                                        <h1>Welcome, {currentUser.name}</h1>
+                                        <button onClick={handleLogOut}>Log out</button>
+                                        {rooms.map((room) => (
+                                            <NavLink key={room.id} to={`/react-chat/rooms/${room.id}`}>
+                                                {room.name}
+                                            </NavLink>
+                                        ))}
+                                    </nav>
+                                    <Outlet />
+                                </>
+                            }
+                        >
+                            <Route path="/*" element={<Navigate to="/react-chat/home" />} />
+                            <Route path="/react-chat/home" element={<Home />} />
+                            <Route path="/react-chat/rooms/:id" element={<Room />} />
+                        </Route>
+                    ) : (
+                        <>
+                            <Route path="/*" element={<Navigate to="/react-chat/sign-up" />} />
+                            <Route path="/react-chat/sign-up" element={<SignUpForm loadRooms={loadRooms} />} />
+                            <Route path="/react-chat/sign-in" element={<SignInForm loadRooms={loadRooms} />} />
+                        </>
+                    )}
+                </Routes>
+            </HashRouter>
+        );
+    }
 }
 
 export default App;
