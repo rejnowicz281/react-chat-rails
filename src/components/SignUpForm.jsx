@@ -1,34 +1,62 @@
+import { useState } from "react";
+import { signUp } from "../helpers/API";
 import { useUserStore } from "../store";
 
 function SignUpForm() {
     const setUser = useUserStore((state) => state.setUser);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordConfirm, setPasswordConfirm] = useState("");
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        const form = event.target;
-        const name = form.name.value;
-        const email = form.email.value;
-        const password = form.password.value;
-        const passwordConfirm = form.password_confirm.value;
 
         if (password !== passwordConfirm) {
             alert("Passwords don't match");
             return;
         }
-
-        setUser({ name, email, password });
+        const data = await signUp(name, email, password, passwordConfirm);
+        if (data) {
+            console.log(data);
+            setUser(data.user);
+        }
     }
 
     return (
         <form onSubmit={handleSubmit} className="SignUpForm">
             <label htmlFor="name">Name</label>
-            <input type="text" id="name" placeholder="Enter your name" />
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" placeholder="Enter your email" />
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" />
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
             <label htmlFor="password_confirm">Confirm password</label>
-            <input type="password" id="password_confirm" placeholder="Confirm your password" />
+            <input
+                type="password"
+                id="password_confirm"
+                placeholder="Confirm your password"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+            />
             <button type="submit">Sign up</button>
         </form>
     );

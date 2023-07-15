@@ -4,6 +4,7 @@ import { getRooms } from "../helpers/API";
 import { useUserStore } from "../store";
 import Home from "./Home";
 import Room from "./Room";
+import SignInForm from "./SignInForm";
 import SignUpForm from "./SignUpForm";
 
 function App() {
@@ -41,7 +42,12 @@ function App() {
             </HashRouter>
         );
     } else {
-        return <SignUpForm />;
+        return (
+            <>
+                <SignUpForm />
+                <SignInForm />
+            </>
+        );
     }
 }
 

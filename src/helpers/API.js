@@ -36,3 +36,37 @@ export async function sendMessage(room_id, text) {
         console.log(error);
     }
 }
+
+export async function signUp(name, email, password, password_confirmation) {
+    try {
+        const response = await axios.post(
+            `${API_URL}/registrations`,
+            {
+                name,
+                email,
+                password,
+                password_confirmation,
+            },
+            { withCredentials: true }
+        );
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function signIn(email, password) {
+    try {
+        const response = await axios.post(
+            `${API_URL}/sessions`,
+            {
+                email,
+                password,
+            },
+            { withCredentials: true }
+        );
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
