@@ -13,37 +13,29 @@ function App() {
     const logOutUser = useUserStore((state) => state.logout);
     const [rooms, setRooms] = useState([]);
     const [roomsLoaded, setRoomsLoaded] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
         checkLoginStatus().then((loginStatus) => {
             console.log(loginStatus);
-            if (loginStatus.logged_in && !currentUser) {
-                setUser(loginStatus.user);
-                setLoggedIn(true);
-            } else if (!loginStatus.logged_in && currentUser) {
-                setUser(null);
-                setLoggedIn(false);
-            }
+            if (loginStatus.logged_in && !currentUser) loadRooms().then(() => setUser(loginStatus.user));
+            else if (!loginStatus.logged_in && currentUser) setUser(null);
         });
     }, []);
-
-    useEffect(() => {
-        if (currentUser) {
-            getRooms().then((roomsData) => {
-                setRooms(roomsData);
-                setRoomsLoaded(true);
-            });
-        }
-    }, [currentUser]);
 
     async function handleLogOut() {
         const data = await signOut();
         if (data) {
             console.log(data);
             logOutUser();
-            setLoggedIn(false);
+            setRooms([]);
         }
+    }
+
+    async function loadRooms() {
+        const roomsData = await getRooms();
+        setRooms(roomsData);
+        setRoomsLoaded(true);
+        console.log("rooms loaded!");
     }
 
     return (
@@ -73,8 +65,8 @@ function App() {
                 ) : (
                     <>
                         <Route path="/*" element={<Navigate to="/react-chat/sign-up" />} />
-                        <Route path="/react-chat/sign-up" element={<SignUpForm />} />
-                        <Route path="/react-chat/sign-in" element={<SignInForm />} />
+                        <Route path="/react-chat/sign-up" element={<SignUpForm loadRooms={loadRooms} />} />
+                        <Route path="/react-chat/sign-in" element={<SignInForm loadRooms={loadRooms} />} />
                     </>
                 )}
             </Routes>
