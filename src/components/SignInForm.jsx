@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { signIn } from "../helpers/API";
 import { useUserStore } from "../store";
 
@@ -18,25 +19,28 @@ function SignInForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="SignInForm">
-            <label htmlFor="email">Email</label>
-            <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <label htmlFor="password">Password</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Sign In</button>
-        </form>
+        <>
+            <form onSubmit={handleSubmit} className="SignInForm">
+                <label htmlFor="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <label htmlFor="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Sign In</button>
+            </form>
+            <Link to="/react-chat/sign-up">Sign Up </Link>
+        </>
     );
 }
 

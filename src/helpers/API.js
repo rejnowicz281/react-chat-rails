@@ -70,3 +70,21 @@ export async function signIn(email, password) {
         console.log(error);
     }
 }
+
+export async function signOut() {
+    try {
+        const response = await axios.delete(`${API_URL}/logout`, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function checkLoginStatus() {
+    try {
+        const response = await axios.get(`${API_URL}/logged_in`, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
