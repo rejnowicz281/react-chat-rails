@@ -68,7 +68,7 @@ function App() {
                             }
                         >
                             <Route path="/*" element={<Navigate to="/react-chat/home" />} />
-                            <Route path="/react-chat/home" element={<Home />} />
+                            <Route path="/react-chat/home" element={<Home loadRooms={loadRooms} />} />
                             <Route path="/react-chat/rooms/:id" element={<Room />} />
                         </Route>
                     ) : (
