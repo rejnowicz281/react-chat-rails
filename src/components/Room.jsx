@@ -47,10 +47,15 @@ function Room() {
 
     // Get messages from API on first load
     useEffect(() => {
+        let mounted = true;
         getRoomMessages(id).then((messagesData) => {
-            setMessages(messagesData);
-            setInitialMessagesLoaded(true);
+            if (mounted) {
+                setMessages(messagesData);
+                setInitialMessagesLoaded(true);
+            }
         });
+
+        return () => (mounted = false);
     }, [id]);
 
     function handleSend(e) {
