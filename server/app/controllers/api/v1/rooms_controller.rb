@@ -18,7 +18,7 @@ class Api::V1::RoomsController < ApplicationController
     @room = Room.new(room_params)
 
     if @room.save
-      render json: @room, status: :created, location: @room
+      render json: @room, status: :created, location: api_v1_room_url(@room)
     else
       render json: @room.errors, status: :unprocessable_entity
     end
