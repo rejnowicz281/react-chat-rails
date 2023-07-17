@@ -37,6 +37,15 @@ export async function sendMessage(room_id, text) {
     }
 }
 
+export async function createRoom(name) {
+    try {
+        const response = await axios.post(`${API_URL}/rooms`, { name });
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function signUp(name, email, password, password_confirmation) {
     try {
         const response = await axios.post(
