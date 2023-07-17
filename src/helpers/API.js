@@ -28,9 +28,9 @@ export async function getRoomMessages(room_id) {
     }
 }
 
-export async function sendMessage(room_id, text) {
+export async function sendMessage(user_id, room_id, text) {
     try {
-        const response = await axios.post(`${API_URL}/rooms/${room_id}/messages`, { text });
+        const response = await axios.post(`${API_URL}/rooms/${room_id}/messages`, { user_id, text });
         return response.data;
     } catch (error) {
         console.log(error);

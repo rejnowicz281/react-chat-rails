@@ -14,7 +14,7 @@ export const useUserStore = create((set, get) => ({
     },
     signIn: async (email, password) => {
         const data = await signIn(email, password);
-        if (data) {
+        if (data.status == "created") {
             console.log(data);
             set({ user: data.user });
             await useRoomsStore.getState().loadRooms();
@@ -22,7 +22,7 @@ export const useUserStore = create((set, get) => ({
     },
     signUp: async (name, email, password) => {
         const data = await signUp(name, email, password);
-        if (data) {
+        if (data.status == "created") {
             console.log(data);
             set({ user: data.user });
             await useRoomsStore.getState().loadRooms();

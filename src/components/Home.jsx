@@ -21,6 +21,7 @@ function Home() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Room name"
+                    required
                 />
                 <button type="submit">Create Room</button>
             </form>

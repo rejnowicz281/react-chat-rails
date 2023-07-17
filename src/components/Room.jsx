@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getRoomMessages, sendMessage } from "../helpers/API";
+import { useUserStore } from "../store";
 
 function Room() {
+    const currentUser = useUserStore((state) => state.user);
     const [initialMessagesLoaded, setInitialMessagesLoaded] = useState(false);
     const [socketConnected, setSocketConnected] = useState(false);
     const { id } = useParams();
@@ -53,7 +55,7 @@ function Room() {
 
     function handleSend(e) {
         e.preventDefault();
-        sendMessage(id, messageInput);
+        sendMessage(currentUser.id, id, messageInput);
         setMessageInput("");
     }
 
@@ -62,7 +64,9 @@ function Room() {
             <div className="Room">
                 <ul>
                     {messages.map((message) => (
-                        <li key={message.id}>{message.text}</li>
+                        <li key={message.id}>
+                            {message.user.name}:{message.text}
+                        </li>
                     ))}
                 </ul>
                 <form onSubmit={handleSend}>

@@ -22,6 +22,7 @@ function SignInForm() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                 />
                 <label htmlFor="password">Password</label>
                 <input
@@ -30,6 +31,7 @@ function SignInForm() {
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                 />
                 <button type="submit">Sign In</button>
             </form>
