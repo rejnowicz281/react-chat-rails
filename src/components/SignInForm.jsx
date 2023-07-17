@@ -1,23 +1,15 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signIn } from "../helpers/API";
 import { useUserStore } from "../store";
 
-function SignInForm({ loadRooms }) {
-    const setUser = useUserStore((state) => state.setUser);
+function SignInForm() {
+    const signIn = useUserStore((state) => state.signIn);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    async function handleSubmit(event) {
-        event.preventDefault();
-
-        const data = await signIn(email, password);
-        if (data) {
-            console.log(data);
-            setUser(data.user);
-            await loadRooms();
-        }
+    function handleSubmit(e) {
+        e.preventDefault();
+        signIn(email, password);
     }
 
     return (
@@ -45,9 +37,5 @@ function SignInForm({ loadRooms }) {
         </>
     );
 }
-
-SignInForm.propTypes = {
-    loadRooms: PropTypes.func.isRequired,
-};
 
 export default SignInForm;

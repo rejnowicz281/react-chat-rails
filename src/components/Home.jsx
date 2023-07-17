@@ -1,14 +1,13 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
-import { createRoom } from "../helpers/API";
+import { useRoomsStore } from "../store";
 
-function Home({ loadRooms }) {
+function Home() {
     const [name, setName] = useState("");
+    const createRoom = useRoomsStore((state) => state.createRoom);
 
     function handleSubmit(e) {
         e.preventDefault();
         createRoom(name);
-        loadRooms();
     }
 
     return (
@@ -28,9 +27,5 @@ function Home({ loadRooms }) {
         </div>
     );
 }
-
-Home.propTypes = {
-    loadRooms: PropTypes.func.isRequired,
-};
 
 export default Home;

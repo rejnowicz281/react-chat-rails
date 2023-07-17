@@ -1,29 +1,22 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { signUp } from "../helpers/API";
 import { useUserStore } from "../store";
 
-function SignUpForm({ loadRooms }) {
-    const setUser = useUserStore((state) => state.setUser);
+function SignUpForm() {
+    const signUp = useUserStore((state) => state.signUp);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
 
-    async function handleSubmit(event) {
-        event.preventDefault();
+    function handleSubmit(e) {
+        e.preventDefault();
 
         if (password !== passwordConfirm) {
             alert("Passwords don't match");
             return;
         }
-        const data = await signUp(name, email, password, passwordConfirm);
-        if (data) {
-            console.log(data);
-            setUser(data.user);
-            await loadRooms();
-        }
+        signUp(name, email, password);
     }
 
     return (
@@ -67,9 +60,5 @@ function SignUpForm({ loadRooms }) {
         </>
     );
 }
-
-SignUpForm.propTypes = {
-    loadRooms: PropTypes.func.isRequired,
-};
 
 export default SignUpForm;
