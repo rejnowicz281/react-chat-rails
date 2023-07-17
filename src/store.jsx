@@ -50,9 +50,7 @@ export const useRoomsStore = create((set, get) => ({
     setRoomsLoaded: (roomsLoaded) => set({ roomsLoaded }),
     createRoom: async (name) => {
         const roomData = await createRoom(name);
-        if (roomData) {
-            set({ rooms: [...get().rooms, roomData] });
-        }
+        if (roomData) await get().loadRooms();
     },
     loadRooms: async () => {
         const roomsData = await getRooms();
