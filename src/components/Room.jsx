@@ -48,6 +48,7 @@ function Room() {
     // Get messages from API on first load
     useEffect(() => {
         let mounted = true;
+        setInitialMessagesLoaded(false);
         getRoomMessages(id).then((messagesData) => {
             if (mounted) {
                 setMessages(messagesData);
@@ -58,6 +59,14 @@ function Room() {
         return () => (mounted = false);
     }, [id]);
 
+    // Scroll to bottom of messages on new message and on load
+    useEffect(() => {
+        if (initialMessagesLoaded && socketConnected) {
+            const messagesDiv = document.querySelector(".messages");
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }, [messages]);
+
     function handleSend(e) {
         e.preventDefault();
         sendMessage(currentUser.id, id, messageInput);
@@ -66,27 +75,39 @@ function Room() {
 
     if (initialMessagesLoaded && socketConnected) {
         return (
-            <div className="Room">
-                <ul>
+            <div className="h-full flex flex-col">
+                <div className="messages flex-1 overflow-y-scroll break-words p-3">
+                    {messages.length === 0 && (
+                        <div className="text-2xl flex h-full justify-center items-center">No messages yet.</div>
+                    )}
                     {messages.map((message) => (
-                        <li key={message.id}>
-                            {message.user.name}:{message.text}
-                        </li>
+                        <div className="p-3" key={message.id}>
+                            <div className="italic">&apos;{message.user.name}&apos; said:</div>
+                            <div className="ps-5">{message.text}</div>
+                        </div>
                     ))}
-                </ul>
-                <form onSubmit={handleSend}>
+                </div>
+                <form onSubmit={handleSend} className="flex p-3">
                     <input
+                        className="flex-1 outline-none px-3 rounded-3xl bg-neutral-700"
                         type="text"
                         id="message"
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
+                        required
+                        placeholder="Type a message..."
                     />
-                    <button type="submit">Send</button>
+                    <button
+                        className="p-3 ms-3 transition-colors hover:bg-neutral-800 hover:text-neutral-100 rounded-2xl"
+                        type="submit"
+                    >
+                        Send
+                    </button>
                 </form>
             </div>
         );
     } else {
-        return <div>Loading...</div>;
+        return <div className="text-4xl h-full flex justify-center items-center">Loading...</div>;
     }
 }
 
