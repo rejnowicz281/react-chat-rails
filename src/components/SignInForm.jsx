@@ -6,20 +6,22 @@ function SignInForm() {
     const signIn = useUserStore((state) => state.signIn);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
         const response = await signIn(email, password);
-        if (response == 401) setError("Incorrect email or password");
+        console.log(response);
+        if (response.status == 401) setError(true);
     }
 
     return (
-        <>
-            <form onSubmit={handleSubmit} className="SignInForm">
-                <div>{error}</div>
+        <div className="w-[500px]">
+            <form className="bg-stone-800 rounded-2xl p-12 text-xl" onSubmit={handleSubmit}>
+                {error && <div className="text-center text-sm p-4">Invalid email or password</div>}
                 <label htmlFor="email">Email</label>
                 <input
+                    className="text-base text-stone-700 block mt-3 mb-5 p-2 w-full rounded bg-slate-100 outline-none"
                     type="email"
                     id="email"
                     placeholder="Enter your email"
@@ -29,6 +31,7 @@ function SignInForm() {
                 />
                 <label htmlFor="password">Password</label>
                 <input
+                    className="text-base text-stone-700 block mt-3 mb-5 p-2 w-full rounded bg-slate-100 outline-none"
                     type="password"
                     id="password"
                     placeholder="Enter your password"
@@ -36,10 +39,22 @@ function SignInForm() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Sign In</button>
+                <button
+                    className="bg-green-500 w-full p-4 mt-3 font-medium transition-colors hover:bg-green-400"
+                    type="submit"
+                >
+                    Sign In
+                </button>
             </form>
-            <Link to="/react-chat/sign-up">Sign Up </Link>
-        </>
+            <div className="text-center mt-6">
+                <Link
+                    className="text-teal-500 text-dark text-center rounded transition-colors hover:text-teal-200 text-lg"
+                    to="/react-chat/sign-up"
+                >
+                    Go to Sign Up →
+                </Link>
+            </div>
+        </div>
     );
 }
 

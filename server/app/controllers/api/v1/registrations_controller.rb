@@ -11,7 +11,7 @@ class Api::V1::RegistrationsController < ApplicationController
             session[:user_id] = user.id
             render json: { status: :created, user: user }
         else
-            render json: { status: 500 }
+            render json: user.errors, status: :unprocessable_entity
         end
     end
 end
