@@ -1,7 +1,7 @@
 class Api::V1::RoomsController < ApplicationController
   # GET /rooms
   def index
-    @rooms = Room.all
+    @rooms = Room.order(created_at: :desc)
 
     render json: @rooms
   end
