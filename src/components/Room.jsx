@@ -85,6 +85,8 @@ function Room() {
                 </form>
             </div>
         );
+    } else {
+        return <div>Loading...</div>;
     }
 }
 
