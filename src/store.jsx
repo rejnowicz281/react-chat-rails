@@ -18,6 +18,8 @@ export const useUserStore = create((set, get) => ({
             console.log(data);
             set({ user: data.user });
             await useRoomsStore.getState().loadRooms();
+        } else if (data.status == "401") {
+            return 401;
         }
     },
     signUp: async (name, email, password) => {

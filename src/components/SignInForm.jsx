@@ -6,15 +6,18 @@ function SignInForm() {
     const signIn = useUserStore((state) => state.signIn);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
-        signIn(email, password);
+        const response = await signIn(email, password);
+        if (response == 401) setError("Incorrect email or password");
     }
 
     return (
         <>
             <form onSubmit={handleSubmit} className="SignInForm">
+                <div>{error}</div>
                 <label htmlFor="email">Email</label>
                 <input
                     type="email"
